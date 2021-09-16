@@ -10,8 +10,12 @@ export class AuthController {
   @Post('/signup')
   async signup(
     @Body(new ValidationPipe()) authCredentialsDto: AuthCredentialsDto,
-  ): Promise<void> {
+  ): Promise<{ accessToken: string }> {
     await this.authService.signup(authCredentialsDto);
+
+    // automatically sign in after signup
+    const { email, password }: LoginCredentialsDto = authCredentialsDto;
+    return this.login({ email, password });
   }
 
   @Post('/login')

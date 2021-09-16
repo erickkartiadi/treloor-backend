@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { uniqueNamesGenerator } from 'unique-names-generator';
 import { AuthCredentialsDto } from '../dto/auth-credentials.dto';
@@ -71,6 +71,6 @@ export class UserRepository extends Repository<User> {
       return user;
     }
 
-    return null;
+    throw new UnauthorizedException('Invalid email or password');
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -24,16 +24,12 @@ export class AuthService {
       loginCredentialsDto,
     );
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-
+    // generate jwt token
     const payload: JwtPayload = {
       id: user.id,
       username: user.username,
       email: user.email,
     };
-
     const accessToken = this.jwtService.sign(payload);
 
     return {
