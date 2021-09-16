@@ -1,8 +1,10 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { uniqueNamesGenerator } from 'unique-names-generator';
 import { AuthCredentialsDto } from '../dto/auth-credentials.dto';
-import { uniqueNamesGeneratorConfig } from '../lib/unique-names-generator.config';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginCredentialsDto } from '../dto/login-credentials.dto';
@@ -15,9 +17,9 @@ export class UserRepository extends Repository<User> {
     const { firstName, lastName, email, password } = authCredentialsDto;
 
     const user = new User();
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.username = await this.generateUniqueUsername();
+    user.firstName = this.capitalizeFirstLetter(firstName);
+    user.lastName = this.capitalizeFirstLetter(lastName);
+    user.username = await this.generateUsername(user.firstName, user.lastName);
     user.email = email;
     user.password = await this.hashPassword(password);
 
@@ -32,9 +34,27 @@ export class UserRepository extends Repository<User> {
           `User with email ${user.email} already exists`,
         );
       } else {
-        console.log(err);
+        throw new InternalServerErrorException();
       }
     }
+  }
+
+  capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  async generateUsername(firstName: string, lastName: string): Promise<string> {
+    const username = firstName.toLowerCase() + lastName.toLowerCase();
+    const userCount = await this.count({
+      firstName: firstName,
+      lastName: lastName,
+    });
+
+    if (userCount > 0) {
+      return username + userCount.toString();
+    }
+
+    return username;
   }
 
   async hashPassword(password: string): Promise<string> {
@@ -45,20 +65,6 @@ export class UserRepository extends Repository<User> {
 
   async findUserByEmail(email: string): Promise<User> {
     return this.findOne({ email: email });
-  }
-
-  async generateUniqueUsername(): Promise<string> {
-    let randomUsername: string;
-    let isUsernameExist: boolean;
-
-    do {
-      randomUsername = uniqueNamesGenerator(uniqueNamesGeneratorConfig);
-      isUsernameExist = (await this.findOne({ username: randomUsername }))
-        ? true
-        : false;
-    } while (isUsernameExist);
-
-    return randomUsername;
   }
 
   async validateUserPassword(
