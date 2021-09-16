@@ -30,6 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
+    delete user.password;
     return user;
   }
 }
