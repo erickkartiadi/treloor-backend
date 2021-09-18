@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BoardService } from './board.service';
 
 @Injectable()
@@ -10,9 +16,12 @@ export class BoardGuard implements CanActivate {
     const userId = req.user.id;
     const boardId = req.params.board;
 
-    // if (!board) {
-    //   return false;
-    // }
-    return true;
+    try {
+      const board = await this.boardService.findOne(boardId, userId);
+      req.board = board;
+      return true;
+    } catch (err) {
+      throw new ForbiddenException();
+    }
   }
 }
