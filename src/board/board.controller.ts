@@ -37,7 +37,7 @@ export class BoardController {
 
   @Get(':id')
   findOne(@Param('id') id: string, @GetUser() user: User) {
-    return this.boardService.findOne(+id, user);
+    return this.boardService.findOne(+id, user.id);
   }
 
   @Patch(':id')
@@ -46,11 +46,11 @@ export class BoardController {
     @GetUser() user: User,
     @Body(new ValidationPipe()) updateBoardDto: UpdateBoardDto,
   ) {
-    return this.boardService.update(+id, user, updateBoardDto);
+    return this.boardService.update(+id, user.id, updateBoardDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string, @GetUser() user: User) {
-    return this.boardService.remove(+id, user);
+    return this.boardService.remove(+id, user.id);
   }
 }

@@ -36,7 +36,7 @@ export class User extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Board, (board) => board.user, { eager: true })
+  @OneToMany(() => Board, (board) => board.user, { eager: true, cascade: true })
   boards: Board[];
 
   async validatePassword(password: string): Promise<boolean> {

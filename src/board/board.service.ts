@@ -13,9 +13,11 @@ export class BoardService {
   ) {}
 
   async create(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
+    const { title, description } = createBoardDto;
+
     const board = new Board();
-    board.title = createBoardDto.title;
-    board.description = createBoardDto.description;
+    board.title = title;
+    board.description = description;
     board.user = user;
     await board.save();
 
@@ -27,8 +29,11 @@ export class BoardService {
     return user.boards;
   }
 
-  async findOne(id: number, user: User): Promise<Board> {
-    const board = await this.boardRepository.findOne({ id: id, user: user });
+  async findOne(id: number, userId: number): Promise<Board> {
+    const board = await this.boardRepository.findOne({
+      id: id,
+      userId: userId,
+    });
 
     if (!board) {
       throw new NotFoundException('Board not found');
@@ -39,18 +44,18 @@ export class BoardService {
 
   async update(
     id: number,
-    user: User,
+    userId: number,
     updateBoardDto: UpdateBoardDto,
   ): Promise<Board> {
-    const board = await this.findOne(id, user);
+    const board = await this.findOne(id, userId);
     board.title = updateBoardDto.title;
     board.description = updateBoardDto.description;
     await board.save();
     return board;
   }
 
-  async remove(id: number, user: User): Promise<Board> {
-    const board = await this.findOne(id, user);
+  async remove(id: number, userId: number): Promise<Board> {
+    const board = await this.findOne(id, userId);
     return board.remove();
   }
 }
