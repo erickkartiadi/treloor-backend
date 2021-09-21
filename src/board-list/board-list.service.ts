@@ -68,8 +68,8 @@ export class BoardListService {
     return boardList.remove();
   }
 
-  //* 1. get left board_list
-  //* 2. exchange left board_list order to selected board_list order
+  //* 1. Get left board_list
+  //* 2. Exchange left board_list order to selected board_list order
   async moveLeft(id: number, boardId: number): Promise<void> {
     const boardList = await this.findOne(id, boardId);
     const boardListOrder = boardList.order;
@@ -83,7 +83,9 @@ export class BoardListService {
       .limit(1)
       .getMany();
 
+    // if list is leftmost/rightmost
     if (query.length === 0 || query === undefined) {
+      console.log('leftmost');
       return;
     }
 
@@ -112,6 +114,7 @@ export class BoardListService {
       .getMany();
 
     if (query.length === 0 || query === undefined) {
+      console.log('rightmost');
       return;
     }
 

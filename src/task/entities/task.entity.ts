@@ -1,18 +1,16 @@
-import { Board } from 'src/board/entities/board.entity';
-import { Task } from 'src/task/entities/task.entity';
+import { BoardList } from 'src/board-list/entities/board-list.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class BoardList extends BaseEntity {
+export class Task extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,12 +26,9 @@ export class BoardList extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Board, (board) => board.boardList)
-  board: Board;
-
-  @OneToMany(() => Task, (task) => task.boardList)
-  task: Task[];
+  @ManyToOne(() => BoardList, (boardList) => boardList.task)
+  boardList: BoardList;
 
   @Column()
-  boardId: number;
+  boardListId: number;
 }

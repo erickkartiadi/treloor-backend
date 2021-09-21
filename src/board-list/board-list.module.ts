@@ -14,5 +14,6 @@ import { BoardModule } from 'src/board/board.module';
   ],
   controllers: [BoardListController],
   providers: [BoardListService],
+  exports: [BoardListService],
 })
 export class BoardListModule {}
