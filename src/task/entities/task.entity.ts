@@ -1,4 +1,4 @@
-import { BoardList } from 'src/board-list/entities/board-list.entity';
+import { List } from 'src/list/entities/list.entity';
 import {
   BaseEntity,
   Column,
@@ -26,9 +26,9 @@ export class Task extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => BoardList, (boardList) => boardList.task)
-  boardList: BoardList;
+  @ManyToOne(() => List, (list) => list.task)
+  list: List;
 
   @Column()
-  boardListId: number;
+  listId: number;
 }

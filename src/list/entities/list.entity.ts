@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class BoardList extends BaseEntity {
+export class List extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,10 +28,10 @@ export class BoardList extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Board, (board) => board.boardList)
+  @ManyToOne(() => Board, (board) => board.list)
   board: Board;
 
-  @OneToMany(() => Task, (task) => task.boardList)
+  @OneToMany(() => Task, (task) => task.list)
   task: Task[];
 
   @Column()

@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { BoardModule } from './board/board.module';
-import { BoardListModule } from './board-list/board-list.module';
+import { ListModule } from './list/list.module';
 import { TaskModule } from './task/task.module';
 
 @Module({
@@ -17,7 +17,7 @@ import { TaskModule } from './task/task.module';
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     AuthModule,
     BoardModule,
-    BoardListModule,
+    ListModule,
     TaskModule,
   ],
   controllers: [AppController],

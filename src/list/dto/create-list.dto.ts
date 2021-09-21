@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateBoardListDto {
+export class CreateListDto {
   @IsNotEmpty()
   @IsString()
   title: string;

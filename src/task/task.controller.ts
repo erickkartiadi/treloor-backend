@@ -12,7 +12,7 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { BoardGuard } from 'src/board/board.guard';
-import { BoardListService } from 'src/board-list/board-list.service';
+import { ListService } from 'src/list/list.service';
 import { Task } from './entities/task.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
@@ -27,7 +27,7 @@ type TaskParam = {
 export class TaskController {
   constructor(
     private readonly taskService: TaskService,
-    private boardListService: BoardListService,
+    private listService: ListService,
   ) {}
 
   @Post('/task')
@@ -35,14 +35,11 @@ export class TaskController {
     @Param() params: TaskParam,
     @Body(new ValidationPipe()) createTaskDto: CreateTaskDto,
   ): Promise<Task> {
-    const { board: boardId, list: boardListId } = params;
+    const { board: boardId, list: listId } = params;
 
-    const boardList = await this.boardListService.findOne(
-      +boardListId,
-      +boardId,
-    );
+    const list = await this.listService.findOne(+listId, +boardId);
 
-    return this.taskService.create(createTaskDto, boardList);
+    return this.taskService.create(createTaskDto, list);
   }
 
   @Patch('/task/:id')
@@ -50,48 +47,36 @@ export class TaskController {
     @Param() params: TaskParam,
     @Body() updateTaskDto: UpdateTaskDto,
   ): Promise<Task> {
-    const { board: boardId, list: boardListId, id: taskId } = params;
+    const { board: boardId, list: listId, id: taskId } = params;
 
-    const boardList = await this.boardListService.findOne(
-      +boardListId,
-      +boardId,
-    );
-    return this.taskService.update(+taskId, boardList.id, updateTaskDto);
+    const list = await this.listService.findOne(+listId, +boardId);
+    return this.taskService.update(+taskId, list.id, updateTaskDto);
   }
 
   @Delete('/task/:id')
   async remove(@Param() params: TaskParam): Promise<Task> {
-    const { board: boardId, list: boardListId, id: taskId } = params;
+    const { board: boardId, list: listId, id: taskId } = params;
 
-    const boardList = await this.boardListService.findOne(
-      +boardListId,
-      +boardId,
-    );
+    const list = await this.listService.findOne(+listId, +boardId);
 
-    return this.taskService.remove(+taskId, boardList.id);
+    return this.taskService.remove(+taskId, list.id);
   }
 
-  @Post('/task/:id/up')
-  async moveUp(@Param() params: TaskParam): Promise<void> {
-    const { board: boardId, list: boardListId, id: taskId } = params;
+  // @Post('/task/:id/up')
+  // async moveUp(@Param() params: TaskParam): Promise<void> {
+  //   const { board: boardId, list: listId, id: taskId } = params;
 
-    const boardList = await this.boardListService.findOne(
-      +boardListId,
-      +boardId,
-    );
+  //   const list = await this.listService.findOne(+listId, +boardId);
 
-    return this.taskService.moveUp(+taskId, boardList.id);
-  }
+  //   return this.taskService.moveUp(+taskId, list.id);
+  // }
 
-  @Post('/task/:id/down')
-  async moveDown(@Param() params: TaskParam): Promise<void> {
-    const { board: boardId, list: boardListId, id: taskId } = params;
+  // @Post('/task/:id/down')
+  // async moveDown(@Param() params: TaskParam): Promise<void> {
+  //   const { board: boardId, list: listId, id: taskId } = params;
 
-    const boardList = await this.boardListService.findOne(
-      +boardListId,
-      +boardId,
-    );
+  //   const list = await this.listService.findOne(+listId, +boardId);
 
-    return this.taskService.moveDown(+taskId, boardList.id);
-  }
+  //   return this.taskService.moveDown(+taskId, list.id);
+  // }
 }

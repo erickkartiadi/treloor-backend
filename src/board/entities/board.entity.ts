@@ -1,5 +1,5 @@
 import { User } from 'src/auth/entities/user.entity';
-import { BoardList } from 'src/board-list/entities/board-list.entity';
+import { List } from 'src/list/entities/list.entity';
 import {
   BaseEntity,
   Column,
@@ -31,8 +31,8 @@ export class Board extends BaseEntity {
   @ManyToOne(() => User, (user) => user.boards)
   user: User;
 
-  @OneToMany(() => BoardList, (boardList) => boardList.board)
-  boardList: BoardList[];
+  @OneToMany(() => List, (list) => list.board)
+  list: List[];
 
   @Column()
   userId: number;

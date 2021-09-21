@@ -5,13 +5,13 @@ import { AuthModule } from 'src/auth/auth.module';
 import { BoardModule } from 'src/board/board.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskRepository } from './entities/task.repository';
-import { BoardListModule } from 'src/board-list/board-list.module';
+import { ListModule } from 'src/list/list.module';
 
 @Module({
   imports: [
     AuthModule,
     BoardModule,
-    BoardListModule,
+    ListModule,
     TypeOrmModule.forFeature([TaskRepository]),
   ],
   controllers: [TaskController],
