@@ -27,7 +27,7 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn()
@@ -39,7 +39,10 @@ export class User extends BaseEntity {
   @ManyToMany(() => Board, (board) => board.users, { eager: true })
   boards: Board[];
 
-  async validatePassword(password: string): Promise<boolean> {
-    return bcrypt.compare(password, this.password);
+  async validatePassword(
+    password: string,
+    hashPassword: string,
+  ): Promise<boolean> {
+    return bcrypt.compare(password, hashPassword);
   }
 }
