@@ -16,6 +16,25 @@ export class BoardService {
     @InjectRepository(BoardRepository) private boardRepository: BoardRepository,
   ) {}
 
+  async openBoard(user: User, boardId: number) {
+    const countBoardMember = await this.boardRepository.countBoardMember(
+      boardId,
+      user.id,
+    );
+
+    console.log(countBoardMember);
+
+    if (countBoardMember <= 0) {
+      throw new ForbiddenException('You have to be a member to do that');
+    }
+
+    const boards = await this.boardRepository.findOne(boardId, {
+      relations: ['list', 'list.task'],
+    });
+
+    return boards;
+  }
+
   async create(createBoardDto: CreateBoardDto, user: User): Promise<Board> {
     const { title, description } = createBoardDto;
 

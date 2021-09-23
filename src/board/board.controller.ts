@@ -32,6 +32,14 @@ export class BoardController {
     return this.authService.findAllBoards(user);
   }
 
+  @Get(':id')
+  async openBoard(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<Board> {
+    return this.boardService.openBoard(user, +id);
+  }
+
   @Post()
   async create(
     @Body(new ValidationPipe()) createBoardDto: CreateBoardDto,
