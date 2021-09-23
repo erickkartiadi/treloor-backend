@@ -8,7 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
-import { BoardGuard } from 'src/board/board.guard';
 import { Board } from 'src/board/entities/board.entity';
 import { GetBoard } from 'src/board/get-board.decorator';
 import { ListService } from './list.service';
@@ -17,7 +16,7 @@ import { UpdateListDto } from './dto/update-list.dto';
 import { List } from './entities/list.entity';
 
 @Controller('board/:board')
-@UseGuards(JwtAuthGuard, BoardGuard)
+@UseGuards(JwtAuthGuard)
 export class ListController {
   constructor(private readonly listService: ListService) {}
 

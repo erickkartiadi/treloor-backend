@@ -5,7 +5,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -28,12 +29,23 @@ export class Board extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.boards)
-  user: User;
+  @Column()
+  creatorId: number;
+
+  @ManyToMany(() => User, (user) => user.boards)
+  @JoinTable({
+    name: 'board_member',
+    joinColumn: {
+      name: 'boardId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+  })
+  users: User[];
 
   @OneToMany(() => List, (list) => list.board)
   list: List[];
-
-  @Column()
-  userId: number;
 }

@@ -11,7 +11,6 @@ import {
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
-import { BoardGuard } from 'src/board/board.guard';
 import { ListService } from 'src/list/list.service';
 import { Task } from './entities/task.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -23,7 +22,7 @@ type TaskParam = {
 };
 
 @Controller('/board/:board/list/:list')
-@UseGuards(JwtAuthGuard, BoardGuard)
+@UseGuards(JwtAuthGuard)
 export class TaskController {
   constructor(
     private readonly taskService: TaskService,
