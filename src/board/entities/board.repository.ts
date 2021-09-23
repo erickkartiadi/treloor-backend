@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { Board } from './board.entity';
 
@@ -20,23 +20,5 @@ export class BoardRepository extends Repository<Board> {
       .where('board.id = :boardId', { boardId: boardId })
       .andWhere('user.id = :userId', { userId: userId })
       .getCount();
-  }
-
-  /**
-   * Return board if user is a member, throw error if user not a member
-   * @param boardId number - board id
-   * @param userId number - user id
-   * @returns Promise<Board>
-   */
-  async validateBoardMember(boardId: number, userId: number): Promise<Board> {
-    const board = await this.findBoardById(boardId);
-
-    const countBoardMember = await this.countBoardMember(boardId, userId);
-
-    if (countBoardMember <= 0) {
-      throw new ForbiddenException('You have to be a member to do that');
-    }
-
-    return board;
   }
 }

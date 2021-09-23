@@ -34,7 +34,7 @@ export class BoardService {
   async update(id: number, userId: number, updateBoardDto: UpdateBoardDto) {
     const { title, description } = updateBoardDto;
 
-    const board = await this.boardRepository.validateBoardMember(id, userId);
+    const board = await this.validateBoardMember(id, userId);
     board.title = title;
     board.description = description;
     await board.save();
@@ -43,7 +43,7 @@ export class BoardService {
   }
 
   async remove(id: number, userId: number) {
-    const board = await this.boardRepository.validateBoardMember(id, userId);
+    const board = await this.validateBoardMember(id, userId);
 
     if (board.creatorId !== userId) {
       throw new ForbiddenException(
@@ -57,10 +57,7 @@ export class BoardService {
 
   async addMember(user: User, newMember: User, boardId: number): Promise<void> {
     // check if current user is he part of the board (only board member allowed to add another member)
-    const board = await this.boardRepository.validateBoardMember(
-      boardId,
-      user.id,
-    );
+    const board = await this.validateBoardMember(boardId, user.id);
 
     // check if member is already added to the board
     const countBoardMember = await this.boardRepository.countBoardMember(
@@ -82,10 +79,7 @@ export class BoardService {
     memberId: number,
     boardId: number,
   ): Promise<void> {
-    const board = await this.boardRepository.validateBoardMember(
-      boardId,
-      user.id,
-    );
+    const board = await this.validateBoardMember(boardId, user.id);
 
     // only creator can remove another member AND
     // member can remove themselves
@@ -108,5 +102,26 @@ export class BoardService {
     const newUsers = board.users.filter((user) => user.id !== memberId);
     board.users = newUsers;
     await board.save();
+  }
+
+  /**
+   * Return board if user is a member, throw error if user not a member
+   * @param boardId number - board id
+   * @param userId number - user id
+   * @returns Promise<Board>
+   */
+  async validateBoardMember(boardId: number, userId: number): Promise<Board> {
+    const board = await this.boardRepository.findBoardById(boardId);
+
+    const countBoardMember = await this.boardRepository.countBoardMember(
+      boardId,
+      userId,
+    );
+
+    if (countBoardMember <= 0) {
+      throw new ForbiddenException('You have to be a member to do that');
+    }
+
+    return board;
   }
 }
